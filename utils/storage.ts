@@ -81,5 +81,13 @@ export async function readDayLogs(dateKeys: string[]): Promise<(DayLog | null)[]
   return Promise.all(dateKeys.map((key) => readDayLog(key)));
 }
 
+/**
+ * Wipe every key in AsyncStorage. DEV-only utility — do not call in production.
+ * Clears all Siply data including user profile, settings, and every day log.
+ */
+export async function clearAllStorage(): Promise<void> {
+  await AsyncStorage.clear();
+}
+
 // Unused generic typed helper kept for future use
 export type { StorageValueMap };

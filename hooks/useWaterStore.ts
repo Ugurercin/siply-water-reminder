@@ -40,6 +40,9 @@ interface UseWaterStoreReturn {
   addDrink: (drinkType: DrinkType, amountMl: number) => Promise<void>;
   removeDrink: (entryId: string) => Promise<void>;
   setGoal: (goalMl: number) => Promise<void>;
+  /** Re-read today's log from storage. Call this when returning from a modal
+   *  that may have written a new entry via a separate hook instance. */
+  refresh: () => Promise<void>;
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -131,5 +134,5 @@ export function useWaterStore(dailyGoalMl: number): UseWaterStoreReturn {
     });
   }, []);
 
-  return { todayLog, isLoaded, addDrink, removeDrink, setGoal };
+  return { todayLog, isLoaded, addDrink, removeDrink, setGoal, refresh: loadToday };
 }
