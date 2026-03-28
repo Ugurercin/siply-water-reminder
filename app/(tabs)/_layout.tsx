@@ -1,33 +1,57 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+interface TabIconProps {
+  color: string;
+  size: number;
+  name: IoniconsName;
+}
 
+function TabIcon({ color, size, name }: TabIconProps): React.JSX.Element {
+  return <Ionicons name={name} size={size} color={color} />;
+}
+
+export default function TabLayout(): React.JSX.Element {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: '#2DC8A0',
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#E5E7EB',
+          borderTopWidth: 1,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Today',
+          tabBarIcon: ({ color, size }) => (
+            <TabIcon name="water-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="history"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'History',
+          tabBarIcon: ({ color, size }) => (
+            <TabIcon name="bar-chart-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, size }) => (
+            <TabIcon name="settings-outline" color={color} size={size} />
+          ),
         }}
       />
     </Tabs>

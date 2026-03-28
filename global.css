@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Ocean theme (default) — Siply brand: soft teal */
+    --background: 166 100% 98%;
+    --foreground: 170 20% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 170 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 170 20% 15%;
+    --primary: 163 61% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 166 50% 94%;
+    --secondary-foreground: 163 61% 30%;
+    --muted: 166 30% 95%;
+    --muted-foreground: 170 10% 50%;
+    --accent: 163 61% 90%;
+    --accent-foreground: 163 61% 30%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 166 20% 88%;
+    --input: 166 20% 88%;
+    --ring: 163 61% 48%;
+  }
+
+  .dark {
+    /* Midnight theme */
+    --background: 222 30% 10%;
+    --foreground: 210 20% 90%;
+    --card: 222 25% 14%;
+    --card-foreground: 210 20% 90%;
+    --popover: 222 25% 14%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 163 61% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 20% 20%;
+    --secondary-foreground: 210 20% 80%;
+    --muted: 222 20% 18%;
+    --muted-foreground: 210 10% 55%;
+    --accent: 222 20% 22%;
+    --accent-foreground: 210 20% 80%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 15% 22%;
+    --input: 222 15% 22%;
+    --ring: 163 61% 48%;
+  }
+}

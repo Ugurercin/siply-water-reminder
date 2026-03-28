@@ -1,17 +1,22 @@
 {
   "expo": {
-    "name": "siply-water-reminder",
+    "name": "Siply: Water Reminder",
     "slug": "siply-water-reminder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "siplywaterreminder",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.siply.waterreminder",
+      "infoPlist": {
+        "NSUserNotificationsUsageDescription": "Siply sends hydration reminders to help you reach your daily water goal."
+      }
     },
     "android": {
+      "package": "com.siply.waterreminder",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -19,7 +24,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["NOTIFICATIONS", "RECEIVE_BOOT_COMPLETED", "VIBRATE"]
     },
     "web": {
       "output": "static",
@@ -27,6 +33,14 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-notifications",
+        {
+          // "icon": "./assets/images/notification-icon.png",
+          "color": "#2DC8A0",
+          "defaultChannel": "hydration"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -42,7 +56,7 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     }
   }
 }
