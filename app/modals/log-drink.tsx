@@ -14,12 +14,13 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { StatusBar } from 'expo-status-bar';
 
-import { useSettings } from '@/hooks/useSettings';
+import { usePurchases } from '@/hooks/usePurchases';
+import { useSettingsContext } from '@/context/SettingsContext';
 import { useWaterStore } from '@/hooks/useWaterStore';
 import type { DrinkType, VolumeUnit } from '@/types';
 import { DRINK_TYPES } from '@/types';
-import { displayToMl, formatVolume, getPresetAmounts } from '@/utils/units';
 import { THEME_PALETTE } from '@/constants/themes';
+import { displayToMl, formatVolume, getPresetAmounts } from '@/utils/units';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -31,16 +32,6 @@ interface DrinkTypeConfig {
   icon: IoniconsName;
   free: boolean;
 }
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const DRINK_TYPE_CONFIG: DrinkTypeConfig[] = [
-  { type: DRINK_TYPES.WATER, label: 'Water', icon: 'water-outline', free: true },
-  { type: DRINK_TYPES.COFFEE, label: 'Coffee', icon: 'cafe-outline', free: false },
-  { type: DRINK_TYPES.TEA, label: 'Tea', icon: 'leaf-outline', free: false },
-  { type: DRINK_TYPES.JUICE, label: 'Juice', icon: 'nutrition-outline', free: false },
-  { type: DRINK_TYPES.SPORTS, label: 'Sports', icon: 'fitness-outline', free: false },
-];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -83,8 +74,18 @@ function resolveAmountMl(
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
 export default function LogDrinkModal(): React.JSX.Element {
-  const { profile, settings } = useSettings();
+  const { profile, settings } = useSettingsContext();
   const { addDrink } = useWaterStore(profile.dailyGoalMl);
+  const { hasPowerPack } = usePurchases();
+
+  // Drink types unlocked by Power Pack; water is always free
+  const drinkTypeConfig: DrinkTypeConfig[] = [
+    { type: DRINK_TYPES.WATER, label: 'Water', icon: 'water-outline', free: true },
+    { type: DRINK_TYPES.COFFEE, label: 'Coffee', icon: 'cafe-outline', free: hasPowerPack },
+    { type: DRINK_TYPES.TEA, label: 'Tea', icon: 'leaf-outline', free: hasPowerPack },
+    { type: DRINK_TYPES.JUICE, label: 'Juice', icon: 'nutrition-outline', free: hasPowerPack },
+    { type: DRINK_TYPES.SPORTS, label: 'Sports', icon: 'fitness-outline', free: hasPowerPack },
+  ];
 
   const volumeUnit = settings.volumeUnit;
   const themeColors = THEME_PALETTE[settings.theme];
@@ -154,11 +155,12 @@ export default function LogDrinkModal(): React.JSX.Element {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-background"
+      className="bg-background"
+      style={{ flex: 1 }}
       behavior={Platform.select({ ios: 'padding', android: 'height' })}
     >
       <StatusBar style="auto" />
-      <SafeAreaView className="flex-1" edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
 
         {/* Handle bar — visual cue that this is a bottom sheet */}
         <View className="items-center pt-3 pb-1">
@@ -181,7 +183,8 @@ export default function LogDrinkModal(): React.JSX.Element {
         </View>
 
         <ScrollView
-          className="flex-1 px-6"
+          className="px-6"
+          style={{ flex: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -191,7 +194,7 @@ export default function LogDrinkModal(): React.JSX.Element {
           </Text>
 
           <View className="flex-row mb-7">
-            {DRINK_TYPE_CONFIG.map((config) => {
+            {drinkTypeConfig.map((config) => {
               const isSelected = config.free && config.type === selectedDrinkType;
               return (
                 <Pressable

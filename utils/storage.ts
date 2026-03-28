@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { UserProfile, AppSettings, DayLog } from '@/types';
+import type { UserProfile, AppSettings, DayLog, PurchasesState } from '@/types';
 
 // ─── Storage Keys ─────────────────────────────────────────────────────────────
 // All keys are constants — never use inline strings elsewhere in the codebase.
@@ -7,6 +7,7 @@ import type { UserProfile, AppSettings, DayLog } from '@/types';
 export const STORAGE_KEYS = {
   USER_PROFILE: '@siply/user_profile',
   APP_SETTINGS: '@siply/app_settings',
+  PURCHASES: '@siply/purchases',
   DAY_LOG_PREFIX: '@siply/day_log_', // append 'YYYY-MM-DD'
 } as const;
 
@@ -63,6 +64,14 @@ export async function readAppSettings(): Promise<AppSettings | null> {
 
 export async function writeAppSettings(settings: AppSettings): Promise<void> {
   return writeStorage(STORAGE_KEYS.APP_SETTINGS, settings);
+}
+
+export async function readPurchases(): Promise<PurchasesState | null> {
+  return readStorage<PurchasesState>(STORAGE_KEYS.PURCHASES);
+}
+
+export async function writePurchases(state: PurchasesState): Promise<void> {
+  return writeStorage(STORAGE_KEYS.PURCHASES, state);
 }
 
 export async function readDayLog(dateKey: string): Promise<DayLog | null> {

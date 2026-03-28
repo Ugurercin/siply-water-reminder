@@ -11,7 +11,6 @@ import {
   type ListRenderItemInfo,
   type ViewToken,
 } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -81,11 +80,11 @@ interface SlideItemProps {
 
 function SlideItem({ item }: SlideItemProps): React.JSX.Element {
   return (
-    <View style={{ width: SCREEN_WIDTH }} className="flex-1 items-center justify-center px-10">
-      <Animated.View
-        entering={FadeInDown.duration(500).springify()}
-        className="items-center"
-      >
+    <View
+      style={{ width: SCREEN_WIDTH, flex: 1 }}
+      className="items-center justify-center px-10"
+    >
+      <View className="items-center">
         <View className="w-28 h-28 rounded-full bg-primary/10 items-center justify-center mb-8">
           <Ionicons name={item.icon} size={56} color="#2DC8A0" />
         </View>
@@ -95,7 +94,7 @@ function SlideItem({ item }: SlideItemProps): React.JSX.Element {
         <Text className="text-muted-foreground text-base text-center leading-6">
           {item.description}
         </Text>
-      </Animated.View>
+      </View>
     </View>
   );
 }
@@ -123,7 +122,10 @@ export default function WelcomeScreen(): React.JSX.Element {
     if (isLastSlide) {
       router.push('/onboarding/profile');
     } else {
-      flatListRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
+      flatListRef.current?.scrollToIndex({
+        index: activeIndex + 1,
+        animated: true,
+      });
     }
   };
 
@@ -137,11 +139,15 @@ export default function WelcomeScreen(): React.JSX.Element {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
+<SafeAreaView 
+  className="bg-background" 
+  style={{ flex: 1 }}
+  edges={['top', 'bottom']}
+>
       <StatusBar style="dark" />
 
       {/* Skip button */}
-      <Animated.View entering={FadeIn.duration(400)} className="items-end px-6 pt-2">
+      <View className="items-end px-6 pt-2">
         {!isLastSlide && (
           <Pressable
             onPress={handleSkip}
@@ -151,28 +157,25 @@ export default function WelcomeScreen(): React.JSX.Element {
             <Text className="text-muted-foreground text-base">Skip</Text>
           </Pressable>
         )}
-      </Animated.View>
+      </View>
 
       {/* Slides */}
       <FlatList
         ref={flatListRef}
-        data={SLIDES}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
-        className="flex-1"
+  data={SLIDES}
+  renderItem={renderItem}
+  keyExtractor={(item) => item.key}
+  horizontal
+  pagingEnabled
+  showsHorizontalScrollIndicator={false}
+  bounces={false}
+  onViewableItemsChanged={onViewableItemsChanged}
+  viewabilityConfig={viewabilityConfig.current}
+  style={{ flex: 1 }}
       />
 
       {/* Bottom controls */}
-      <Animated.View
-        entering={FadeInDown.duration(400).delay(200)}
-        className="px-6 pb-6 gap-6"
-      >
+      <View className="px-6 pb-6 gap-6">
         <Dots count={SLIDES.length} activeIndex={activeIndex} />
 
         <Pressable
@@ -185,7 +188,7 @@ export default function WelcomeScreen(): React.JSX.Element {
             {isLastSlide ? 'Get Started' : 'Next'}
           </Text>
         </Pressable>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }

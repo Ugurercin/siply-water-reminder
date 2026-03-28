@@ -1,5 +1,6 @@
 import type { UserProfile } from '@/types';
-import { readStorage, STORAGE_KEYS, writeUserProfile } from '@/utils/storage';
+import { scheduleHydrationReminders, setupAndroidChannel } from '@/utils/notifications';
+import { readAppSettings, readStorage, STORAGE_KEYS, writeUserProfile } from '@/utils/storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
@@ -36,16 +37,6 @@ async function finishOnboarding(): Promise<void> {
   }
 }
 
-async function setupAndroidChannel(): Promise<void> {
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('hydration', {
-      name: 'Hydration Reminders',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-    });
-  }
-}
-
 export default function NotificationsScreen(): React.JSX.Element {
   const [isRequesting, setIsRequesting] = useState(false);
 
@@ -54,9 +45,16 @@ export default function NotificationsScreen(): React.JSX.Element {
     setIsRequesting(true);
 
     await setupAndroidChannel();
-    await Notifications.requestPermissionsAsync();
-    // We proceed regardless of whether the user grants permission —
-    // they can always enable it later in Settings.
+    const { status } = await Notifications.requestPermissionsAsync();
+
+    if (status === 'granted') {
+      // Schedule reminders using the settings saved during onboarding
+      const settings = await readAppSettings();
+      if (settings !== null) {
+        await scheduleHydrationReminders(settings);
+      }
+    }
+    // Proceed regardless of permission — user can enable later in Settings
     await finishOnboarding();
 
     setIsRequesting(false);
@@ -69,10 +67,10 @@ export default function NotificationsScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
+    <SafeAreaView className="bg-background" style={{ flex: 1 }} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
 
-      <View className="flex-1 px-6 pt-8 justify-between">
+      <View className="flex-1 px-6 pt-8 justify-between" style={{ flex: 1 }}>
         {/* Top content */}
         <Animated.View entering={FadeInDown.duration(500).springify()}>
           <View className="items-center mb-10">
@@ -111,7 +109,7 @@ export default function NotificationsScreen(): React.JSX.Element {
             disabled={isRequesting}
             android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: false }}
             className={`rounded-2xl py-4 items-center ${isRequesting ? 'bg-primary/50' : 'bg-primary'}`}
-            style={({ pressed }) => [pressed && { opacity: 0.85 }]}
+            style={({ pressed }) => [pressed && Platform.OS === 'ios' && { opacity: 0.85 }]}
           >
             <Text className="text-primary-foreground text-base font-bold">
               Allow Reminders
@@ -122,7 +120,7 @@ export default function NotificationsScreen(): React.JSX.Element {
             onPress={handleSkip}
             android_ripple={{ color: 'rgba(0,0,0,0.06)', borderless: false }}
             className="rounded-2xl py-4 items-center"
-            style={({ pressed }) => [pressed && { opacity: 0.7 }]}
+            style={({ pressed }) => [pressed && Platform.OS === 'ios' && { opacity: 0.7 }]}
           >
             <Text className="text-muted-foreground text-base">Maybe later</Text>
           </Pressable>

@@ -211,7 +211,7 @@ export default function ProfileScreen(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
+    <SafeAreaView className="bg-background" style={{ flex: 1 }} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
 
       {/* Header */}
@@ -228,11 +228,11 @@ export default function ProfileScreen(): React.JSX.Element {
       <ProgressBar step={step} total={TOTAL_STEPS} />
 
       <KeyboardAvoidingView
-        className="flex-1"
+        style={{ flex: 1 }}
         behavior={Platform.select({ ios: 'padding', android: 'height' })}
       >
         <ScrollView
-          className="flex-1"
+          style={{ flex: 1 }}
           contentContainerClassName="px-6 pt-8 pb-6"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}

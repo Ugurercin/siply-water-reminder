@@ -79,3 +79,10 @@ export interface AppSettings {
   theme: Theme;
   avatar: Avatar;
 }
+
+// ─── Purchases ────────────────────────────────────────────────────────────────
+
+export interface PurchasesState {
+  hasThemePack: boolean;
+  hasPowerPack: boolean;
+}

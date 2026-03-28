@@ -1,8 +1,9 @@
 import { DrinkButton } from '@/components/DrinkButton';
 import { ProgressRing } from '@/components/ProgressRing';
+import { AVATARS } from '@/constants/avatars';
 import { THEME_PALETTE } from '@/constants/themes';
+import { useSettingsContext } from '@/context/SettingsContext';
 import { useHistory } from '@/hooks/useHistory';
-import { useSettings } from '@/hooks/useSettings';
 import { useWaterStore } from '@/hooks/useWaterStore';
 import type { DrinkEntry, DrinkType, VolumeUnit } from '@/types';
 import { DRINK_TYPES } from '@/types';
@@ -110,7 +111,7 @@ function DrinkEntryRow({
 // ─── Home Screen ──────────────────────────────────────────────────────────────
 
 export default function HomeScreen(): React.JSX.Element {
-  const { profile, settings, isLoaded: settingsLoaded } = useSettings();
+  const { profile, settings, isLoaded: settingsLoaded } = useSettingsContext();
   const { todayLog, addDrink, removeDrink, refresh } = useWaterStore(profile.dailyGoalMl);
   const { stats } = useHistory();
 
@@ -124,6 +125,7 @@ export default function HomeScreen(): React.JSX.Element {
 
   const volumeUnit = settings.volumeUnit;
   const themeColors = THEME_PALETTE[settings.theme];
+  const avatarConfig = AVATARS[settings.avatar];
 
   const totalMl = todayLog?.totalMl ?? 0;
   const goalMl = todayLog?.goalMl ?? profile.dailyGoalMl;
@@ -157,7 +159,8 @@ export default function HomeScreen(): React.JSX.Element {
   if (!settingsLoaded) {
     return (
       <SafeAreaView
-        className="flex-1 bg-background items-center justify-center"
+        className="bg-background items-center justify-center"
+        style={{ flex: 1 }}
         edges={['top', 'bottom']}
       >
         <StatusBar style="auto" />
@@ -166,11 +169,11 @@ export default function HomeScreen(): React.JSX.Element {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
+    <SafeAreaView className="bg-background" style={{ flex: 1 }} edges={['top', 'bottom']}>
       <StatusBar style="auto" />
 
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
@@ -207,11 +210,17 @@ export default function HomeScreen(): React.JSX.Element {
             color={themeColors.primary}
             trackColor={themeColors.primaryLight}
           >
-            {/* Center: percentage + amounts */}
+            {/* Center: avatar icon + percentage + amounts */}
             <View className="items-center">
+              <Ionicons
+                name={avatarConfig.icon as React.ComponentProps<typeof Ionicons>['name']}
+                size={26}
+                color={themeColors.primary}
+                style={{ marginBottom: 2 }}
+              />
               <Text
                 className="text-foreground font-bold"
-                style={{ fontSize: 52, lineHeight: 60 }}
+                style={{ fontSize: 44, lineHeight: 52 }}
               >
                 {percentage}%
               </Text>
