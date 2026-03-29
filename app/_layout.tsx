@@ -18,7 +18,7 @@ export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
-export default function RootLayout(): React.JSX.Element | null {
+export default function RootLayout(): React.JSX.Element {
   const [isReady, setIsReady] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const rootNavigationState = useRootNavigationState();
@@ -33,6 +33,8 @@ export default function RootLayout(): React.JSX.Element | null {
               shouldShowAlert: true,
               shouldPlaySound: true,
               shouldSetBadge: false,
+              shouldShowBanner: true,
+shouldShowList: true,
             }),
           });
         }
@@ -64,24 +66,28 @@ export default function RootLayout(): React.JSX.Element | null {
     }
   }, [isReady, rootNavigationState?.key, needsOnboarding]);
 
-  if (!isReady) return null;
-
+  // SettingsProvider always wraps the tree so no child ever renders outside it.
+  // The Stack is only mounted once isReady is true.
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen
-            name="modals/log-drink"
-            options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-          />
-          <Stack.Screen
-            name="modals/paywall"
-            options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
+        {isReady ? (
+          <>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen
+                name="modals/log-drink"
+                options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+              />
+              <Stack.Screen
+                name="modals/paywall"
+                options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+              />
+            </Stack>
+            <StatusBar style="auto" />
+          </>
+        ) : null}
       </SettingsProvider>
     </GestureHandlerRootView>
   );

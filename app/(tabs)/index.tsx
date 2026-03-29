@@ -111,7 +111,7 @@ function DrinkEntryRow({
 // ─── Home Screen ──────────────────────────────────────────────────────────────
 
 export default function HomeScreen(): React.JSX.Element {
-  const { profile, settings, isLoaded: settingsLoaded } = useSettingsContext();
+  const { profile, settings } = useSettingsContext();
   const { todayLog, addDrink, removeDrink, refresh } = useWaterStore(profile.dailyGoalMl);
   const { stats } = useHistory();
 
@@ -156,17 +156,8 @@ export default function HomeScreen(): React.JSX.Element {
   // Show most-recent entry first
   const reversedEntries = [...entries].reverse();
 
-  if (!settingsLoaded) {
-    return (
-      <SafeAreaView
-        className="bg-background items-center justify-center"
-        style={{ flex: 1 }}
-        edges={['top', 'bottom']}
-      >
-        <StatusBar style="auto" />
-      </SafeAreaView>
-    );
-  }
+  // Don't block on settingsLoaded — render with defaults immediately.
+  // The screen will update automatically once storage is read.
 
   return (
     <SafeAreaView className="bg-background" style={{ flex: 1 }} edges={['top', 'bottom']}>

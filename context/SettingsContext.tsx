@@ -1,4 +1,3 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { AppSettings, UserProfile } from '@/types';
 import { scheduleHydrationReminders } from '@/utils/notifications';
 import {
@@ -7,8 +6,9 @@ import {
   writeAppSettings,
   writeUserProfile,
 } from '@/utils/storage';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-// ─── Default Values ───────────────────────────────────────────────────────────
+// --- Default Values -----------------------------------------------------------
 
 const DEFAULT_PROFILE: UserProfile = {
   weightKg: 70,
@@ -28,7 +28,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   avatar: 'drop',
 };
 
-// ─── Context Type ─────────────────────────────────────────────────────────────
+// --- Context Type -------------------------------------------------------------
 
 interface SettingsContextValue {
   profile: UserProfile;
@@ -39,11 +39,22 @@ interface SettingsContextValue {
   resetAll: () => Promise<void>;
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// --- Default context value (safe fallback before provider mounts) -------------
 
-const SettingsContext = createContext<SettingsContextValue | null>(null);
+const DEFAULT_CONTEXT: SettingsContextValue = {
+  profile: DEFAULT_PROFILE,
+  settings: DEFAULT_SETTINGS,
+  isLoaded: false,
+  updateProfile: async () => {},
+  updateSettings: async () => {},
+  resetAll: async () => {},
+};
 
-// ─── Provider ─────────────────────────────────────────────────────────────────
+// --- Context -----------------------------------------------------------------
+
+const SettingsContext = createContext<SettingsContextValue>(DEFAULT_CONTEXT);
+
+// --- Provider ----------------------------------------------------------------
 
 export function SettingsProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
@@ -102,12 +113,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }): R
   );
 }
 
-// ─── Consumer Hook ────────────────────────────────────────────────────────────
+// --- Consumer Hook -----------------------------------------------------------
 
+// Returns safe defaults instead of throwing when called before provider mounts.
+// Screens should check `isLoaded` before rendering real content.
 export function useSettingsContext(): SettingsContextValue {
-  const ctx = useContext(SettingsContext);
-  if (ctx === null) {
-    throw new Error('useSettingsContext must be used inside <SettingsProvider>');
-  }
-  return ctx;
+  return useContext(SettingsContext);
 }

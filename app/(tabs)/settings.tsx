@@ -1,7 +1,7 @@
 import { AVATARS } from '@/constants/avatars';
 import { THEME_PALETTE, THEMES } from '@/constants/themes';
-import { usePurchases } from '@/hooks/usePurchases';
 import { useSettingsContext } from '@/context/SettingsContext';
+import { usePurchases } from '@/hooks/usePurchases';
 import type { Avatar, Theme, VolumeUnit, WeightUnit } from '@/types';
 import { calculateDailyGoalMl } from '@/utils/goalCalculator';
 import { clearAllStorage } from '@/utils/storage';

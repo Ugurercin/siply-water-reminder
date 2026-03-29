@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "siplywaterreminder",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.siply.waterreminder",
@@ -35,8 +35,7 @@
     },
     "plugins": [
       "expo-router",
-       "expo-router",
-  "expo-dev-client",
+      "expo-dev-client",
       [
         "expo-splash-screen",
         {
@@ -55,8 +54,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "52a063fa-a9ce-498d-830a-906c1d7c0f93"
+        "projectId": "210f0cbb-8ee8-4be3-a483-68e3f2a3a042"
       }
-    }
+    },
+    "owner": "ugure"
   }
 }
