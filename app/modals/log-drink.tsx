@@ -1,3 +1,7 @@
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -9,17 +13,13 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { StatusBar } from 'expo-status-bar';
 
-import { usePurchases } from '@/hooks/usePurchases';
+import { THEME_PALETTE } from '@/constants/themes';
 import { useSettingsContext } from '@/context/SettingsContext';
+import { usePurchases } from '@/hooks/usePurchases';
 import { useWaterStore } from '@/hooks/useWaterStore';
 import type { DrinkType, VolumeUnit } from '@/types';
 import { DRINK_TYPES } from '@/types';
-import { THEME_PALETTE } from '@/constants/themes';
 import { displayToMl, formatVolume, getPresetAmounts } from '@/utils/units';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
